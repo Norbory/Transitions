@@ -16,10 +16,35 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
+	<body class="relative">
+		<div class="reading bg-red-600 h-2"></div>
 		<slot />
 	</body>
 </html>
+<script>
+	// Nuevos metodos para animaciones
+	// const $reading = document.querySelector('.reading') as HTMLElement;
+	// $reading.style.transformOrigin = '0% 50%'
+	// $reading.animate(
+	// 	{
+	// 		transform: ['scaleX(0)','scaleX(1)'],
+	// 	},
+	// 	{
+	// 		fill: 'forwards',
+	// 		timeline: new ScrollTimeline({
+	// 			source: document.documentElement,
+	// 		}),
+	// 	}
+	// );
+	window.addEventListener('scroll', () => {
+		const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+		const scrolled = (window.scrollY / docHeight) * 100;
+		const readingElement = document.querySelector('.reading');
+		if (readingElement) {
+			(readingElement as HTMLElement).style.width = scrolled + '%';
+		}
+	});
+</script>
 <style is:global>
 	:root {
 		--accent: 136, 58, 234;
@@ -34,7 +59,6 @@ const { title } = Astro.props;
 	}
 	html {
 		font-family: system-ui, sans-serif;
-		background: #13151a;
 	}
 	code {
 		font-family:
@@ -46,5 +70,15 @@ const { title } = Astro.props;
 			Bitstream Vera Sans Mono,
 			Courier New,
 			monospace;
+	}
+	.reading {
+		position: fixed;
+		top: 0;
+		left: 0;
+		transform-origin: left;
+		z-index: 1000;
+		/* Es experimental para versiones más adelantadas de chrome */
+		/* animation: grow-progress 2s linear forwards;
+		animation-timeline: scroll(); */
 	}
 </style>
